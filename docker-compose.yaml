@@ -1,0 +1,40 @@
+services:
+  jobs:
+    build:
+      context: .
+      dockerfile: docker/dockerfile
+    container_name: jobs_container 
+    ports:
+      - "8009:8009"
+    volumes:
+      - .:/var/www/html 
+    depends_on:
+      - jobs_db
+    networks:
+      - jobs_network
+      - app_network
+
+  jobs_db:
+    image: postgres:16
+    container_name: jobs_db_container
+    environment:
+      - POSTGRES_USER=nouh
+      - POSTGRES_PASSWORD=nouh2001
+      - POSTGRES_DB=jobs_db_name
+    ports:
+      - "5435:5432"
+    volumes:
+      - jobs_db_data:/var/lib/postgresql/data
+    networks:
+      - jobs_network
+      - app_network
+
+
+networks:
+  jobs_network:
+    driver: bridge
+  app_network:
+    external: true    
+
+volumes:
+  jobs_db_data:
