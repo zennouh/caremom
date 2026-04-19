@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->unsignedBigInteger('company_id');
             $table->text('description');
             $table->string('company_name');
             $table->string('location')->nullable();
-            $table->float('salary');
+            $table->float('salary', 2);
             $table->enum('employment_type', ['full-time', 'part-time', "remote"])->default('full-time');
             $table->enum('experience_level', ['junior', 'mid', 'senior'])->default("junior");
             $table->boolean('is_active')->default(true);
