@@ -9,17 +9,46 @@ use Illuminate\Http\Request;
 class MomJobController extends Controller
 {
 
+    // filter by: apply, accepted, rejected, pending
     public function index(Request $request)
     {
+        $type = $request->query('type', 'all'); // all | applied | non-applied
+        $status = $request->query('status'); // accepted | rejected | pending
         $mom_id = $request->input('mom_id');
 
-        $jobs = Job::with(["applications" => function ($query) use ($mom_id) {
-            $query->select('id', 'job_id', 'mom_id')
-                ->where('mom_id', '!=', $mom_id);
-        }])
+        $jobs = Job::query()
+
+            ->when($type === 'applied', function ($q) use ($mom_id, $status) {
+                $q->whereHas('applications', function ($q2) use ($mom_id, $status) {
+                    $q2->where('mom_id', $mom_id);
+                    if ($status) {
+                        $q2->where('status', $status);
+                    }
+                });
+            })
+            ->when($type === 'non-applied', function ($q) use ($mom_id) {
+                $q->whereDoesntHave('applications', function ($q2) use ($mom_id) {
+                    $q2->where('mom_id', $mom_id);
+                });
+            })
+            ->with([
+                'applications' => function ($query) use ($mom_id) {
+                    $query->select('id', 'job_id', 'mom_id', 'status')
+                        ->where('mom_id', $mom_id);
+                }
+            ])
+
+            ->withExists([
+                'applications as has_applied' => function ($query) use ($mom_id) {
+                    $query->where('mom_id', $mom_id);
+                }
+            ])
+
             ->where('is_active', true)
             ->orderBy('jobs.created_at', 'desc')
             ->get();
+
+        // return $jobs;
         return $jobs;
     }
 
