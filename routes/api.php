@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('mom')->group(function () {
 
     Route::post('/', [MomJobController::class, 'index']);
+
     Route::get('{id}', [MomJobController::class, 'show']);
 
     Route::post('{jobId}/apply', [MomJobController::class, 'apply']);
@@ -17,10 +18,11 @@ Route::prefix('mom')->group(function () {
 Route::prefix('enterprise')
     ->controller(EnterpriseJobController::class)
     ->group(function () {
-
+        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::put('{id}', 'update');
+        // Route::put('{id}', 'update');
         Route::delete('{id}', 'destroy');
 
         Route::get('{jobId}/applicants', 'applicants');
+        Route::patch('/{jobId}/status', 'updateStatus');
     });
