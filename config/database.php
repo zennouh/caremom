@@ -99,6 +99,14 @@ return [
             'sslmode' => env('DB_SSLMODE', 'prefer'),
         ],
 
+        'auth_db' => [
+            'driver' => 'pgsql',
+            'host' => env('DB_HOST_OTHER', '127.0.0.1'),
+            'database' => env('DB_DATABASE_OTHER', 'forge'),
+            'username' => env('DB_USERNAME_OTHER', 'forge'),
+            'password' => env('DB_PASSWORD_OTHER', ''),
+        ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),
@@ -149,7 +157,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 
