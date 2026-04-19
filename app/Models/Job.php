@@ -10,6 +10,7 @@ class Job extends Model
         'title',
         'description',
         'company_name',
+        'company_id',
         'location',
         'salary',
         'employment_type'
